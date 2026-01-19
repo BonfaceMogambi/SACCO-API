@@ -1,0 +1,4 @@
+uvicorn main:app --reload
+fastapi
+pydantic
+Have postman installed and ready to use. Specify sample requests for testing the API and responses.

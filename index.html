@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SACCO Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .nav-tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .nav-tab.active {
+            background: white;
+            border-bottom: 3px solid #667eea;
+            color: #667eea;
+        }
+
+        .nav-tab:hover {
+            background: #e9ecef;
+        }
+
+        .tab-content {
+            padding: 30px;
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f, #a8e6cf);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .result-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .result-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .result-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+        }
+
+        .card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .transaction-item {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-amount.dr {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .transaction-amount.cr {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loan-info {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .loan-info h4 {
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .nav-tab {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>🏦 SACCO Dashboard</h1>
+            <p>Manage Accounts, Transfers, Loans & Statements</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('balance')">Balance Enquiry</button>
+            <button class="nav-tab" onclick="switchTab('transfer')">Funds Transfer</button>
+            <button class="nav-tab" onclick="switchTab('statement')">Mini Statement</button>
+            <button class="nav-tab" onclick="switchTab('loan-inquiry')">Loan Inquiry</button>
+            <button class="nav-tab" onclick="switchTab('loan-ft')">Loan Transfer</button>
+        </div>
+
+        <!-- Balance Enquiry Tab -->
+        <div id="balance" class="tab-content active">
+            <div class="card">
+                <h3>💰 Balance Enquiry</h3>
+                <div class="form-group">
+                    <label>Account Number</label>
+                    <input type="text" id="balanceAccount" class="form-control" placeholder="e.g., ACC001" value="ACC001">
+                </div>
+                <div class="form-group">
+                    <label>Institution Code</label>
+                    <input type="text" id="balanceInstitution" class="form-control" placeholder="e.g., SACCO001" value="SACCO001">
+                </div>
+                <button class="btn btn-primary" onclick="checkBalance()">Check Balance</button>
+                
+                <div id="balanceResult" class="result-container" style="display: none;">
+                    <div class="result-title">Balance Information</div>
+                    <div id="balanceContent" class="result-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Funds Transfer Tab -->
+        <div id="transfer" class="tab-content">
+            <div class="card">
+                <h3>💸 Funds Transfer</h3>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>From Account (Debit)</label>
+                        <input type="text" id="transferFrom" class="form-control" placeholder="e.g., ACC001" value="ACC001">
+                    </div>
+                    <div class="form-group">
+                        <label>To Account (Credit)</label>
+                        <input type="text" id="transferTo" class="form-control" placeholder="e.g., ACC002" value="ACC002">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Amount (KES)</label>
+                    <input type="number" id="transferAmount" class="form-control" placeholder="e.g., 5000" value="5000">
+                </div>
+                <div class="form-group">
+                    <label>Narration</label>
+                    <input type="text" id="transferNarration" class="form-control" placeholder="e.g., School fees payment" value="Test transfer">
+                </div>
+                <button class="btn btn-primary" onclick="sendTransfer()">Send Transfer</button>
+                
+                <div id="transferResult" class="result-container" style="display: none;">
+                    <div class="result-title">Transfer Result</div>
+                    <div id="transferContent" class="result-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mini Statement Tab -->
+        <div id="statement" class="tab-content">
+            <div class="card">
+                <h3>📊 Mini Statement</h3>
+                <div class="form-group">
+                    <label>Account Number</label>
+                    <input type="text" id="statementAccount" class="form-control" placeholder="e.g., ACC001" value="ACC001">
+                </div>
+                <div class="form-group">
+                    <label>Number of Transactions</label>
+                    <select id="statementLimit" class="form-control">
+                        <option value="5">5 Transactions</option>
+                        <option value="10">10 Transactions</option>
+                        <option value="15">15 Transactions</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="getStatement()">Get Statement</button>
+                
+                <div id="statementResult" class="result-container" style="display: none;">
+                    <div class="result-title">Account Statement</div>
+                    <div id="statementContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Inquiry Tab -->
+        <div id="loan-inquiry" class="tab-content">
+            <div class="card">
+                <h3>🏠 Loan Inquiry</h3>
+                <div class="form-group">
+                    <label>Account Number</label>
+                    <input type="text" id="loanInquiryAccount" class="form-control" placeholder="e.g., ACC001" value="ACC001">
+                </div>
+                <div class="form-group">
+                    <label>Customer ID (Optional)</label>
+                    <input type="text" id="loanCustomerId" class="form-control" placeholder="e.g., CUST001" value="CUST001">
+                </div>
+                <button class="btn btn-primary" onclick="checkLoan()">Check Loan Details</button>
+                
+                <div id="loanInquiryResult" class="result-container" style="display: none;">
+                    <div class="result-title">Loan Information</div>
+                    <div id="loanInquiryContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Funds Transfer Tab -->
+        <div id="loan-ft" class="tab-content">
+            <div class="card">
+                <h3>🔄 Loan Funds Transfer</h3>
+                <div class="form-group">
+                    <label>Loan Account</label>
+                    <input type="text" id="loanAccount" class="form-control" placeholder="e.g., LOAN001" value="LOAN001">
+                </div>
+                <div class="form-group">
+                    <label>Transaction Type</label>
+                    <select id="loanTransactionType" class="form-control" onchange="toggleLoanFields()">
+                        <option value="0033">0033 - Loan Disbursement</option>
+                        <option value="0034">0034 - Loan Repayment</option>
+                        <option value="0035">0035 - Loan Top-up</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Amount (KES)</label>
+                    <input type="number" id="loanAmount" class="form-control" placeholder="e.g., 25000" value="10000">
+                </div>
+                <div class="form-group">
+                    <label>Loan Type</label>
+                    <input type="text" id="loanType" class="form-control" placeholder="e.g., PERSONAL" value="PERSONAL">
+                </div>
+                <div class="form-group">
+                    <label>Currency</label>
+                    <input type="text" id="loanCurrency" class="form-control" placeholder="e.g., KES" value="KES">
+                </div>
+                <button class="btn btn-primary" onclick="processLoanTransfer()">Process Loan Transaction</button>
+                
+                <div id="loanTransferResult" class="result-container" style="display: none;">
+                    <div class="result-title">Loan Transaction Result</div>
+                    <div id="loanTransferContent" class="result-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api/v1';
+        let messageCounter = 1;
+
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function generateMessageID(prefix) {
+            return `${prefix}_${Date.now()}_${messageCounter++}`;
+        }
+
+        async function makeAPIRequest(endpoint, payload) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                throw new Error(`API Request failed: ${error.message}`);
+            }
+        }
+
+        // Balance Enquiry
+        async function checkBalance() {
+            try {
+                const payload = {
+                    serviceName: "Balance",
+                    messageID: generateMessageID("BAL"),
+                    Connection: {
+                        connectionID: "test_connection",
+                        connectionPassword: "test_password"
+                    },
+                    getBalanceRequest: {
+                        OperationParameters: {
+                            TransactionDate: new Date().toISOString(),
+                            TerminalID: "WEB001",
+                            Channel: "WEB"
+                        },
+                        Account: {
+                            DebitAccount: document.getElementById('balanceAccount').value
+                        },
+                        Institution: {
+                            InstitutionCode: document.getElementById('balanceInstitution').value,
+                            InstitutionName: "SACCO Main Branch"
+                        },
+                        Posting: {
+                            ChargeAmount: "5.00",
+                            ChargeCurrency: "KES",
+                            FeeAmount: "0.00",
+                            FeeCurrency: "KES",
+                            Narrative: "Balance enquiry charge"
+                        }
+                    }
+                };
+
+                const result = await makeAPIRequest('/balance', payload);
+                
+                document.getElementById('balanceContent').textContent = JSON.stringify(result, null, 2);
+                document.getElementById('balanceResult').style.display = 'block';
+            } catch (error) {
+                document.getElementById('balanceContent').textContent = `Error: ${error.message}`;
+                document.getElementById('balanceResult').style.display = 'block';
+            }
+        }
+
+        // Funds Transfer
+        async function sendTransfer() {
+            try {
+                const payload = {
+                    serviceName: "FT",
+                    messageID: generateMessageID("FT"),
+                    Connection: {
+                        connectionID: "test_connection",
+                        connectionPassword: "test_password"
+                    },
+                    sendFundsTransferRequest: {
+                        OperationParameters: {
+                            TransactionDate: new Date().toISOString(),
+                            TerminalID: "WEB001",
+                            Channel: "WEB",
+                            connectionMode: "ONLINE",
+                            TransactionType: "TRANSFER"
+                        },
+                        Institution: {
+                            InstitutionCode: "SACCO001",
+                            InstitutionName: "SACCO Main Branch"
+                        },
+                        Posting: {
+                            DebitAccount: document.getElementById('transferFrom').value,
+                            Amount: document.getElementById('transferAmount').value,
+                            Currency: "KES",
+                            CreditAccount: document.getElementById('transferTo').value,
+                            ChargeAmount: "10.00",
+                            ChargeCurrency: "KES",
+                            FeeAmount: "0.00",
+                            FeeCurrency: "KES",
+                            Narrative1: document.getElementById('transferNarration').value
+                        }
+                    }
+                };
+
+                const result = await makeAPIRequest('/funds-transfer', payload);
+                
+                document.getElementById('transferContent').textContent = JSON.stringify(result, null, 2);
+                document.getElementById('transferResult').style.display = 'block';
+            } catch (error) {
+                document.getElementById('transferContent').textContent = `Error: ${error.message}`;
+                document.getElementById('transferResult').style.display = 'block';
+            }
+        }
+
+        // Mini Statement
+        async function getStatement() {
+            try {
+                const payload = {
+                    serviceName: "MiniStatement",
+                    messageID: generateMessageID("MINI"),
+                    Connection: {
+                        connectionID: "test_connection",
+                        connectionPassword: "test_password"
+                    },
+                    ministatementRequest: {
+                        OperationParameters: {
+                            TransactionDate: new Date().toISOString(),
+                            MaxNumberRows: document.getElementById('statementLimit').value
+                        },
+                        Account: {
+                            DebitAccount: document.getElementById('statementAccount').value,
+                            MobileNumber: "254712345678"
+                        },
+                        Institution: {
+                            InstitutionCode: "SACCO001"
+                        },
+                        Posting: {
+                            ChargeAmount: "0.00",
+                            ChargeCurrency: "KES",
+                            FeeAmount: "0.00",
+                            FeeCurrency: "KES",
+                            Narrative: "Mini statement request"
+                        }
+                    }
+                };
+
+                const result = await makeAPIRequest('/mini-statement', payload);
+                
+                // Format transactions nicely
+                let html = '<div class="transaction-list">';
+                result.ministatementResponse.AccountTransactions.forEach(txn => {
+                    html += `
+                        <div class="transaction-item">
+                            <div>
+                                <strong>${txn.Narration}</strong><br>
+                                <small>${new Date(txn.TransactionDate).toLocaleString()}</small><br>
+                                <small>Ref: ${txn.TransactionReference}</small>
+                            </div>
+                            <div class="transaction-amount ${txn.DebitCreditFlag.toLowerCase()}">
+                                ${txn.DebitCreditFlag} ${parseFloat(txn.Amount).toLocaleString('en-KE', {style: 'currency', currency: 'KES'})}<br>
+                                <small>Balance: ${parseFloat(txn.ClearedRunningBalance).toLocaleString('en-KE', {style: 'currency', currency: 'KES'})}</small>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                document.getElementById('statementContent').innerHTML = html;
+                document.getElementById('statementResult').style.display = 'block';
+            } catch (error) {
+                document.getElementById('statementContent').textContent = `Error: ${error.message}`;
+                document.getElementById('statementResult').style.display = 'block';
+            }
+        }
+
+        // Loan Inquiry
+        async function checkLoan() {
+            try {
+                const payload = {
+                    serviceName: "LoanInquiry",
+                    messageID: generateMessageID("LOANINQ"),
+                    Connection: {
+                        connectionID: "test_connection",
+                        connectionPassword: "test_password"
+                    },
+                    LoanInquiryInput: {
+                        OperationParameters: {
+                            TransactionDate: new Date().toISOString(),
+                            TransactionType: "INQUIRY",
+                            Channel: "WEB",
+                            TerminalID: "WEB001"
+                        },
+                        Account: {
+                            DebitAccount: document.getElementById('loanInquiryAccount').value
+                        },
+                        Posting: {
+                            CustomerID: document.getElementById('loanCustomerId').value,
+                            LoanType: "PERSONAL"
+                        },
+                        Institution: {
+                            InstitutionCode: "SACCO001"
+                        }
+                    }
+                };
+
+                const result = await makeAPIRequest('/loan/inquiry', payload);
+                
+                const loanInfo = result.LoanInquiryOutput.Posting;
+                let html = `
+                    <div class="loan-info">
+                        <h4>Loan Details</h4>
+                        <p><strong>Type:</strong> ${loanInfo.LoanType}</p>
+                        <p><strong>Balance:</strong> ${parseFloat(loanInfo.LoanBalance).toLocaleString('en-KE', {style: 'currency', currency: loanInfo.Currency})}</p>
+                        <p><strong>Principal:</strong> ${parseFloat(loanInfo.PrincipalAmount).toLocaleString('en-KE', {style: 'currency', currency: loanInfo.Currency})}</p>
+                        <p><strong>Next Payment:</strong> ${loanInfo.NextPaymentDate}</p>
+                        <p><strong>Status:</strong> ${loanInfo.Status}</p>
+                    </div>
+                    <div class="result-content">${JSON.stringify(result, null, 2)}</div>
+                `;
+                
+                document.getElementById('loanInquiryContent').innerHTML = html;
+                document.getElementById('loanInquiryResult').style.display = 'block';
+            } catch (error) {
+                document.getElementById('loanInquiryContent').textContent = `Error: ${error.message}`;
+                document.getElementById('loanInquiryResult').style.display = 'block';
+            }
+        }
+
+        // Loan Funds Transfer
+        async function processLoanTransfer() {
+            try {
+                const payload = {
+                    serviceName: "LoanFT",
+                    messageID: generateMessageID("LOANFT"),
+                    Connection: {
+                        connectionID: "test_connection",
+                        connectionPassword: "test_password"
+                    },
+                    LoanFTRequest: {
+                        OperationParameters: {
+                            TransactionDate: new Date().toISOString(),
+                            TransactionType: document.getElementById('loanTransactionType').value,
+                            Channel: "WEB",
+                            TerminalID: "WEB001"
+                        },
+                        Account: {
+                            LoanAccount: document.getElementById('loanAccount').value
+                        },
+                        Posting: {
+                            LoanType: document.getElementById('loanType').value,
+                            Amount: parseFloat(document.getElementById('loanAmount').value),
+                            Currency: document.getElementById('loanCurrency').value,
+                            CustomerId: "CUST001"
+                        },
+                        Institution: {
+                            InstitutionCode: "SACCO001",
+                            InstitutionName: "SACCO Main Branch"
+                        }
+                    }
+                };
+
+                const result = await makeAPIRequest('/loan/ft', payload);
+                
+                document.getElementById('loanTransferContent').textContent = JSON.stringify(result, null, 2);
+                document.getElementById('loanTransferResult').style.display = 'block';
+            } catch (error) {
+                document.getElementById('loanTransferContent').textContent = `Error: ${error.message}`;
+                document.getElementById('loanTransferResult').style.display = 'block';
+            }
+        }
+
+        function toggleLoanFields() {
+            const type = document.getElementById('loanTransactionType').value;
+            // You can add dynamic field changes here based on transaction type
+        }
+
+        // Initialize with some sample data
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('SACCO Dashboard Loaded');
+        });
+    </script>
+</body>
+</html>
