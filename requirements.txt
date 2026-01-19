@@ -2,3 +2,47 @@ uvicorn main:app --reload
 fastapi
 pydantic
 Have postman installed and ready to use. Specify sample requests for testing the API and responses.
+
+1. Windows
+    Download Git from: git-scm.com
+    Install it (use default settings)
+
+    Mac / Linux
+
+2. Open Terminal and run:
+    git --version
+If not installed, install via package manager.
+
+3: Open Your Project in VS Code
+    Open VS Code
+    Click File → Open Folder
+    Select your project folder
+
+4: Initialize Git in Your Project
+    Open Terminal in VS Code (Ctrl + `)
+    Run:
+    git init
+
+5: Add Your Files
+    git add .
+
+6: Commit
+    git commit -m "Initial commit"
+
+7: Create GitHub Repository
+    Go to GitHub and create a new repository.
+
+🔹 Make sure you do NOT add README or .gitignore (optional)
+8: Connect Your Local Project to GitHub
+
+Copy the repository URL and run:
+
+git remote add origin https://github.com/yourusername/your-repo.git
+
+9: Push to GitHub
+git push -u origin main
+
+
+If you get an error about main not found, try:
+
+git push -u origin master
