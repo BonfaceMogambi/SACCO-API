@@ -1,3 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.env/
+.venv/
+
+# Virtual Environment
+venv/
+venv*/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets & Certificates
 .env
+*.crt
+*.key
+*.pem
+*.p12
+private_key.crt
 certificate.crt
 private.key
+
+# API documentation
+API.docx
